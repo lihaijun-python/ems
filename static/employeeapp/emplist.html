@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>emplist</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css"/>
+    <script src="/static/jquery-1.11.1.min.js"></script>
+</head>
+<script>
+    $(function () {
+
+        $.ajax({
+            type: "GET",
+            url: '/employeeapp/sess',
+            success: function (msg1) {
+
+                if (msg1 === 'ok') {
+                    $.ajax({
+                        type: "GET",
+                        url: "/employeeapp/query",
+                        success: function (msg) {
+
+                            obj = msg['users'];
+
+                            console.log(msg);
+                            str = '<tr class="table_header" >\n' +
+                                '            <td>编号</td>\n' +
+                                '            <td>姓名</td>\n' +
+                                '            <td>年龄</td>\n' +
+                                '            <td>工资</td>\n' +
+                                '            <td>生日</td>\n' +
+                                '            <td>头像</td>\n' +
+                                '            <td>更新/删除</td>\n' +
+                                '        </tr>'
+                            for (var i = 0; i < obj.length; i++) {
+                                user = obj[i]
+
+                                str += '<tr class="table_header">';
+                                str += '<td>' + user['id'] + '</td>';
+                                str += '<td>' + user['name'] + '</td>';
+                                str += '<td>' + user['age'] + '</td>';
+                                str += '<td>' + user['salary'] + '</td>';
+                                str += '<td>' + user['birthday'] + '</td>';
+                                str += "<td><img src=/static/" + user.headpic + " width='50px'></td>";
+                                str += "<td>" +
+                                    "<a  href='http://127.0.0.1:8000/static/employeeapp/updateEmp.html/?id=" + user['id'] + "'>更新</a> " +
+                                    "<a href='javascript:void(0)' name=" + user['id'] + " class='del' >删除</a>" +
+
+                                    "</td>";
+
+                                str += '<tr>'
+                            }
+                            document.getElementById('tb').innerHTML = str;
+                            $('.del').click(function () {
+                                var id = this.name;
+                                flag = confirm('确定删除吗');
+                                if (flag) {
+                                    $.ajax({
+                                        type: "GET",
+                                        url: '/employeeapp/dele',
+                                        data: 'id=' + id,
+                                        success: function (msg) {
+                                            if (msg === 'ok') {
+                                                location.href = "/static/employeeapp/emplist.html"
+                                            } else {
+                                                alert('删除失败')
+
+                                            }
+                                        }
+                                    })
+                                } else {
+                                    location.href = "/static/employeeapp/emplist.html"
+                                }
+                            });
+                        }
+
+
+                    });
+                } else {
+                    location.href="/static/loginapp/login.html"
+
+                }
+            }
+        })
+
+    })
+
+</script>
+<body>
+<div id="wrap">
+    <div id="top_content">
+        <div id="header">
+            <div id="rightheader">
+                <p>
+                    2009/11/20
+                    <br/>
+                </p>
+            </div>
+            <div id="topheader">
+                <h1 id="title">
+                    <a href="#">main</a>
+                </h1>
+            </div>
+            <div id="navigation">
+            </div>
+        </div>
+        <div id="content">
+            <p id="whereami">
+            </p>
+            <h1>
+                Welcome!
+            </h1>
+            <table class="table" id="tb">
+
+
+            </table>
+            <p>
+                <input type="button" class="button" value="Add Employee" onclick="location='addEmp.html'"/>
+            </p>
+        </div>
+    </div>
+    <div id="footer">
+        <div id="footer_bg">
+            ABC@126.com
+        </div>
+    </div>
+</div>
+</body>
+</html>

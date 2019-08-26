@@ -1,0 +1,126 @@
+<html>
+<head>
+    <title>login</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css"/>
+    <script src="/static/jquery-1.11.1.min.js"></script>
+    <script src="/static/jquery.cookie.js"></script>
+</head>
+<script>
+
+
+    $(function () {
+        id = location.href.split('?id=')[1];
+        alert(id)
+        $.ajax({
+            type: 'post',
+            url: '/employeeapp/update_emp/',
+            data: 'id=' + id + '&csrfmiddlewaretoken=' + $.cookie('csrftoken'),
+            success: function (msg) {
+                console.log(msg);
+                var emp = msg['user'];
+
+                $('#id1').val(emp.id);
+                $('#id').val(emp.id);
+                $('#update_name').val(emp.name);
+                $('#update_salary').val(emp.salary);
+                $('#update_age').val(emp.age);
+                $('#update_birthday').val(emp.birthday);
+                pic = "/static/" + emp.headpic;
+                $('#update_pic').attr('src', pic);
+            }
+        })
+    });
+
+
+    function update01() {
+        var formdata = new FormData($("#update_id")[0]);
+        $.ajax({
+            type: 'post',
+            url: '/employeeapp/fn_update/',
+            headers: {"X-CSRFtoken": $.cookie("csrftoken")},
+            data: formdata,
+            contentType: false,
+            processData: false,
+            success: function (msg) {
+                if (msg === 'ok') {
+                    location.href = '/static/employeeapp/emplist.html'
+                } else if (msg === 'error') {
+                    alert('更新失败!')
+                }
+            }
+        })
+    }
+</script>
+
+<body>
+<div id="wrap">
+    <div id="top_content">
+        <div id="header">
+            <div id="rightheader"><p>2018/08/08<br/></p></div>
+            <div id="topheader"><h1 id="title"><a href="#">main</a></h1></div>
+            <div id="navigation"></div>
+        </div>
+        <div id="content">
+            <p id="whereami"></p>
+
+
+            <h1>update Emp info:</h1>
+            <form action="#" id="update_id" method="post" enctype="multipart/form-data">
+                <table cellpadding="0" cellspacing="0" border="0" class="form_table">
+                    <tr>
+                        <td valign="middle" align="right">id:</td>
+                        <td id="id1"></td>
+                        <td><input type="hidden" name="id" value="" id="id"></td>
+
+                    </tr>
+                    <tr>
+                        <td valign="middle" align="right">name:</td>
+                        <td valign="middle" align="left">
+                            <input type="text" class="inputgri" name="name" value="" id="update_name"/></td>
+                    </tr>
+                    <tr>
+                        <td valign="middle" align="right">salary:</td>
+                        <td valign="middle" align="left">
+                            <input type="text" class="inputgri" name="salary" value="" id="update_salary"/></td>
+                    </tr>
+                    <tr>
+                        <td valign="middle" align="right">age:</td>
+                        <td valign="middle" align="left">
+                            <input type="text" class="inputgri" name="age" value="" id="update_age"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td valign="middle" align="right">birthday:</td>
+                        <td valign="middle" align="left">
+                            <input type="date" class="inputgri" name="birthday" value="" id="update_birthday"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td valign="middle" align="right">headpic:</td>
+                        <td valign="middle" align="left">
+                            <img src="" alt="" id="update_pic" width="70px">
+                            <input type="file" name="png"/>
+                        </td>
+                    </tr>
+                </table>
+                <p><input type="button" class="button" value="Confirm" onclick="update01()"/></p>
+            </form>
+
+
+        </div>
+    </div>
+    <div id="footer">
+        <div id="footer_bg">ABC@126.com</div>
+    </div>
+</div>
+</body>
+</html>
+
+
+
+
+
+
+
+
